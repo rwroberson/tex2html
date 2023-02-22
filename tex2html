@@ -1,1 +1,23 @@
-/home/reid/.local/bin/tex2html
+#!/bin/sh
+
+# Create html file
+
+FILE=$(echo "$1" | cut -f 1 -d '.').html
+cat $1 > $FILE
+
+# Identify bib file
+
+BIB=$(grep addbibresource $FILE | sed 's/\\addbibresource{//;s/}//')
+
+# Convert section headings
+
+sed -i 's/\\section{/\<h1\>/;s/\\subsection{/<h2>/;s/\\subsubsection{/<h3>/' $FILE
+
+# Convert quotes
+
+sed -i 's/\\begin{quote}/<blockquote>/;s/\\end{quote}/<\/blockquote>/' $FILE
+
+# Convert citations and footnotes
+
+# Remove unnecessary latex tags
+
