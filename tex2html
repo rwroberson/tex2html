@@ -21,3 +21,4 @@ sed -i 's/\\begin{quote}/<blockquote>/;s/\\end{quote}/<\/blockquote>/' $FILE
 
 # Remove unnecessary latex tags
 
+test
