@@ -20,5 +20,3 @@ sed -i 's/\\begin{quote}/<blockquote>/;s/\\end{quote}/<\/blockquote>/' $FILE
 # Convert citations and footnotes
 
 # Remove unnecessary latex tags
-
-test
