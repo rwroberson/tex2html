@@ -5,18 +5,54 @@
 FILE=$(echo "$1" | cut -f 1 -d '.').html
 cat $1 > $FILE
 
-# Identify bib file
+# Identify metadata
 
-BIB=$(grep addbibresource $FILE | sed 's/\\addbibresource{//;s/}//')
+BIB=$(grep 'addbibresource{' $FILE | sed 's/\\addbibresource{//;s/}//')
+	sed -i '/addbibresource{/d' $FILE
+
+TITLE=$(grep 'title{' $FILE | sed 's/\\title{//;s/}//')
+	sed -i '/title{/d' $FILE
+
+AUTH=$(grep 'author{' $FILE | sed 's/\\author{//;s/}//')
+	sed -i '/author{/d' $FILE
+
+DATE=$(grep 'date{' $FILE | sed 's/\\date{//;s/}//')
+	sed -i '/date{/d' $FILE
 
 # Convert section headings
 
 sed -i 's/\\section{/\<h1\>/;s/\\subsection{/<h2>/;s/\\subsubsection{/<h3>/' $FILE
 
+### Need to change back of line from '}' to '<h*>'
+
 # Convert quotes
 
 sed -i 's/\\begin{quote}/<blockquote>/;s/\\end{quote}/<\/blockquote>/' $FILE
 
+# Convert lists
+
+sed -i 's/\\begin{enumerate}/<ol>/;s/\\end{enumerate}/<\/ol>/' $FILE
+sed -i 's/\\begin{itemize}/<ol>/;s/\\end{itemize}/<\/ol>/' $FILE
+sed -i 's/\\item\ /<li>/' $FILE
+
 # Convert citations and footnotes
 
 # Remove unnecessary latex tags
+
+sed -i '/clearpage/d;/printbib/d;/{document/d;/usepackage/d;/maketitle/d;/addbibresource/d;/documentclass/d' $FILE
+
+# Remove white space at beginning and end.
+
+unset n
+while read line
+do
+	if [ -z "$line" ]
+	then
+		n=$(($n + 1))
+	else
+		break
+	fi
+done < $FILE
+sed -i "1,$n d" $FILE
+
+### Still need to remove bottom whitespace
